@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wlznsb.iossupersign.mapper.MdmPackStatusMapper">
+
+    <resultMap id="BaseResultMap" type="com.wlznsb.iossupersign.entity.MdmPackStatusEntity">
+            <id property="id" column="id" jdbcType="VARCHAR"/>
+            <result property="account" column="account" jdbcType="VARCHAR"/>
+            <result property="pageName" column="page_name" jdbcType="VARCHAR"/>
+            <result property="uuid" column="uuid" jdbcType="VARCHAR"/>
+            <result property="udid" column="udid" jdbcType="VARCHAR"/>
+            <result property="iis" column="iis" jdbcType="VARCHAR"/>
+            <result property="p12Path" column="p12_path" jdbcType="VARCHAR"/>
+            <result property="mobilePath" column="mobile_path" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="ipa" column="ipa" jdbcType="VARCHAR"/>
+            <result property="plist" column="plist" jdbcType="VARCHAR"/>
+            <result property="status" column="status" jdbcType="VARCHAR"/>
+            <result property="signOff" column="sign_off" jdbcType="INTEGER"/>
+            <result property="appId" column="app_id" jdbcType="VARCHAR"/>
+            <result property="url" column="url" jdbcType="VARCHAR"/>
+            <result property="ip" column="ip" jdbcType="VARCHAR"/>
+            <result property="downCode" column="down_code" jdbcType="VARCHAR"/>
+            <result property="deviceId" column="device_id" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,account,page_name,
+        uuid,udid,iis,
+        p12_path,mobile_path,create_time,
+        ipa,plist,status,
+        sign_off,app_id,url,
+        ip,down_code,device_id
+    </sql>
+    <select id="selectOneByDeviceId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from mdm_pack_status
+        where
+        device_id = #{deviceId,jdbcType=VARCHAR}
+    </select>
+    <select id="selectByPageNameAndAccountAndStatus" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from mdm_pack_status
+        where
+        page_name = #{pageName,jdbcType=VARCHAR}
+        AND account = #{account,jdbcType=VARCHAR}
+        AND status = #{status,jdbcType=VARCHAR}
+    </select>
+    <select id="selectByAppIdAndAccountAndStatus" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from mdm_pack_status
+        where
+        app_id = #{appId,jdbcType=VARCHAR}
+        AND account = #{account,jdbcType=VARCHAR}
+        AND status = #{status,jdbcType=VARCHAR}
+    </select>
+    <select id="selectByAppIdAndAccountAndStatusOrderByCreateTime" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from mdm_pack_status
+        where
+        app_id = #{appId,jdbcType=VARCHAR}
+        AND account = #{account,jdbcType=VARCHAR}
+        AND status = #{status,jdbcType=VARCHAR}
+        order by create_time
+    </select>
+    <update id="updateStatusByIis">
+        update mdm_pack_status
+        set status = #{status,jdbcType=VARCHAR}
+        where iis = #{iis,jdbcType=VARCHAR}
+    </update>
+    <select id="selectByUuidCount" resultType="integer">
+        select
+        count(id)
+        from mdm_pack_status
+        where
+        app_id = #{uuid,jdbcType=VARCHAR}
+        <if test="day == 'day'">
+            and to_days(create_time) = to_days(now())
+        </if>
+        <if test="day == 'lastDay'">
+            and TO_DAYS(NOW( )) - TO_DAYS(create_time) = 1
+        </if>
+        and status = '点击下载'
+
+    </select>
+
+    <select id="selectByAccountCount" resultType="integer">
+        select
+        count(id)
+        from mdm_pack_status
+        where
+        account = #{account} and status = '点击下载'
+
+    </select>
+
+    <insert id="insertSelective">
+        insert into mdm_pack_status
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="account != null">account,</if>
+            <if test="pageName != null">page_name,</if>
+            <if test="uuid != null">uuid,</if>
+            <if test="udid != null">udid,</if>
+            <if test="iis != null">iis,</if>
+            <if test="p12Path != null">p12_path,</if>
+            <if test="mobilePath != null">mobile_path,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="ipa != null">ipa,</if>
+            <if test="plist != null">plist,</if>
+            <if test="status != null">status,</if>
+            <if test="signOff != null">sign_off,</if>
+            <if test="appId != null">app_id,</if>
+            <if test="url != null">url,</if>
+            <if test="ip != null">ip,</if>
+            <if test="downCode != null">down_code,</if>
+            <if test="deviceId != null">device_id,</if>
+        </trim>
+        values
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id,jdbcType=VARCHAR},</if>
+            <if test="account != null">#{account,jdbcType=VARCHAR},</if>
+            <if test="pageName != null">#{pageName,jdbcType=VARCHAR},</if>
+            <if test="uuid != null">#{uuid,jdbcType=VARCHAR},</if>
+            <if test="udid != null">#{udid,jdbcType=VARCHAR},</if>
+            <if test="iis != null">#{iis,jdbcType=VARCHAR},</if>
+            <if test="p12Path != null">#{p12Path,jdbcType=VARCHAR},</if>
+            <if test="mobilePath != null">#{mobilePath,jdbcType=VARCHAR},</if>
+            <if test="createTime != null">#{createTime,jdbcType=TIMESTAMP},</if>
+            <if test="ipa != null">#{ipa,jdbcType=VARCHAR},</if>
+            <if test="plist != null">#{plist,jdbcType=VARCHAR},</if>
+            <if test="status != null">#{status,jdbcType=VARCHAR},</if>
+            <if test="signOff != null">#{signOff,jdbcType=INTEGER},</if>
+            <if test="appId != null">#{appId,jdbcType=VARCHAR},</if>
+            <if test="url != null">#{url,jdbcType=VARCHAR},</if>
+            <if test="ip != null">#{ip,jdbcType=VARCHAR},</if>
+            <if test="downCode != null">#{downCode,jdbcType=VARCHAR},</if>
+            <if test="deviceId != null">#{deviceId,jdbcType=VARCHAR},</if>
+        </trim>
+    </insert>
+
+
+</mapper>
